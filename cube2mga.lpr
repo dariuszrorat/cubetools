@@ -137,7 +137,7 @@ begin
     end;
 
     Writeln(OutFile, '#HEADER');
-    Writeln(OutFile, '#filename: ' + OutputFileName);
+    Writeln(OutFile, '#filename: ' + ExtractFileName(OutputFileName));
     Writeln(OutFile, '#type: 3D cube file');
     Writeln(OutFile, '#format: 1.00');
     Writeln(OutFile, '#created:');

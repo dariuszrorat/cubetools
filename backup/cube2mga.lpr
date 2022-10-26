@@ -137,12 +137,12 @@ begin
     end;
 
     Writeln(OutFile, '#HEADER');
-    Writeln(OutFile, '#filename ' + OutputFileName);
-    Writeln(OutFile, '#type 3D cube file');
-    Writeln(OutFile, '#format 1.00');
-    Writeln(OutFile, '#created');
-    Writeln(OutFile, '#owner technicolor');
-    Writeln(OutFile, '#title ' + LUTTitle);
+    Writeln(OutFile, '#filename: ' + OutputFileName);
+    Writeln(OutFile, '#type: 3D cube file');
+    Writeln(OutFile, '#format: 1.00');
+    Writeln(OutFile, '#created:');
+    Writeln(OutFile, '#owner: technicolor');
+    Writeln(OutFile, '#title: ' + LUTTitle);
     Writeln(OutFile, '#END');
     Writeln(OutFile);
     Writeln(OutFile, 'channel 3d');
