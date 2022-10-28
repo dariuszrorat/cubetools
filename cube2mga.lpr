@@ -108,8 +108,9 @@ begin
     while not EOF(InFile) do
     begin
       Readln(InFile, Line);
+      Line := Trim(Line);
 
-      if RAWData and (Trim(Line) <> '') then
+      if RAWData and (Line <> '') and (Pos('#', Line) = 0) then
       begin
         Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
         Parts := Line.Split(#9#32);
@@ -120,13 +121,13 @@ begin
         i := i + 1;
       end;
 
-      if Pos('TITLE', Trim(Line)) = 1 then
+      if Pos('TITLE', Line) = 1 then
       begin
         Parts := Line.Split(' ');
         LUTTitle := Parts[High(Parts)];
         LUTTitle := LUTTitle.Trim(['"']);
       end;
-      if Pos('LUT_3D_SIZE', Trim(Line)) = 1 then
+      if Pos('LUT_3D_SIZE', Line) = 1 then
       begin
         Parts := Line.Split(' ');
         CubeSize := StrToInt(Parts[High(Parts)]);
