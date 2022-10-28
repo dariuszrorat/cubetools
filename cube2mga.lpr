@@ -56,6 +56,7 @@ var
   InputFileName: string;
   OutputFileName: string;
   InFile, OutFile: TextFile;
+  InFileOpened, OutFileOpened: boolean;
   CubeSize: integer;
   Max: integer;
   RAWData: boolean;
@@ -99,12 +100,14 @@ begin
   end;
   RAWData := false;
   i := 0;
+  InFileOpened := false;
+  OutFileOpened := false;
 
   AssignFile(InFile, InputFileName);
   AssignFile(OutFile, OutputFileName);
   try
     Reset(InFile);
-    Rewrite(OutFile);
+    InFileOpened := true;
     while not EOF(InFile) do
     begin
       Readln(InFile, Line);
@@ -127,6 +130,12 @@ begin
         LUTTitle := Parts[High(Parts)];
         LUTTitle := LUTTitle.Trim(['"']);
       end;
+      if Pos('LUT_1D_SIZE', Line) = 1 then
+      begin
+        Writeln('CUBE 1D format is not supported');
+        Terminate;
+        Exit;
+      end;
       if Pos('LUT_3D_SIZE', Line) = 1 then
       begin
         Parts := Line.Split(' ');
@@ -137,6 +146,15 @@ begin
       end;
     end;
 
+    if not RAWData then
+    begin
+      Writeln('Unsupported CUBE format');
+      Terminate;
+      Exit;
+    end;
+
+    Rewrite(OutFile);
+    OutFileOpened := true;
     Writeln(OutFile, '#HEADER');
     Writeln(OutFile, '#filename: ' + ExtractFileName(OutputFileName));
     Writeln(OutFile, '#type: 3D cube file');
@@ -174,10 +192,11 @@ begin
       j := k;
       i := k;
     end;
-
   finally
-    CloseFile(InFile);
-    CloseFile(OutFile);
+    if InFileOpened then
+      CloseFile(InFile);
+    if OutFileOpened then
+      CloseFile(OutFile);
   end;
 
   // stop program loop
