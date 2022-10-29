@@ -193,7 +193,7 @@ end;
 procedure TConsoleApplication.WriteHelp;
 begin
   { add your help code here }
-  writeln('Usage: mga2cube <mgafile> <cubefile>');
+  writeln('Usage: mga2cube <mgafile> [<cubefile>]');
 end;
 
 var

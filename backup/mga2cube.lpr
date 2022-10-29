@@ -110,7 +110,7 @@ begin
     begin
       Readln(InFile, Line);
 
-      if RAWData then
+      if RAWData and (Trim(Line) <> '') then
       begin
         Parts := Line.Split(#9#32);
         RGB.R := StrToInt(Parts[Low(Parts) + 1]) / Max;
@@ -148,7 +148,6 @@ begin
     Writeln(OutFile, 'DOMAIN_MIN 0 0 0');
     Writeln(OutFile, 'DOMAIN_MAX 1 1 1');
     Writeln(OutFile, 'LUT_3D_SIZE ' + IntToStr(CubeSize));
-    Writeln(OutFile);
 
     i := 0; j := 0; k := 0;
 

@@ -79,7 +79,8 @@ begin
   end;
 
   // parse parameters
-  if HasOption('h', 'help') then begin
+  if HasOption('h', 'help') or (ParamCount = 0) then
+  begin
     WriteHelp;
     Terminate;
     Exit;
@@ -107,6 +108,7 @@ begin
   AssignFile(OutFile, OutputFileName);
   try
     Reset(InFile);
+    InFileOpened := true;
     while not EOF(InFile) do
     begin
       Readln(InFile, Line);
@@ -153,6 +155,7 @@ begin
     end;
 
     Rewrite(OutFile);
+    OutFileOpened := true;
     Writeln(OutFile, '#HEADER');
     Writeln(OutFile, '#filename: ' + ExtractFileName(OutputFileName));
     Writeln(OutFile, '#type: 3D cube file');
@@ -191,8 +194,10 @@ begin
       i := k;
     end;
   finally
-    CloseFile(InFile);
-    CloseFile(OutFile);
+    if InFileOpened then
+      CloseFile(InFile);
+    if OutFileOpened then
+      CloseFile(OutFile);
   end;
 
   // stop program loop
@@ -213,7 +218,7 @@ end;
 procedure TConsoleApplication.WriteHelp;
 begin
   { add your help code here }
-  writeln('Usage: ', ExeName, ' -h');
+  writeln('Usage: cube2mga <cubefile> <mgafile>');
 end;
 
 var

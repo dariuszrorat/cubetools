@@ -9,17 +9,21 @@
         <Filename Value="cube2mga.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="179"/>
-        <CursorPos X="5" Y="195"/>
+        <TopLine Value="207"/>
+        <CursorPos X="43" Y="221"/>
         <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit0>
     </Units>
-    <JumpHistory Count="1">
+    <JumpHistory Count="2" HistoryIndex="1">
       <Position1>
         <Filename Value="cube2mga.lpr"/>
         <Caret Line="160" Column="26" TopLine="144"/>
       </Position1>
+      <Position2>
+        <Filename Value="cube2mga.lpr"/>
+        <Caret Line="110" Column="26" TopLine="91"/>
+      </Position2>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

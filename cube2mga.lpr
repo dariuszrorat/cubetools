@@ -79,7 +79,8 @@ begin
   end;
 
   // parse parameters
-  if HasOption('h', 'help') then begin
+  if HasOption('h', 'help') or (ParamCount = 0) then
+  begin
     WriteHelp;
     Terminate;
     Exit;
@@ -217,7 +218,7 @@ end;
 procedure TConsoleApplication.WriteHelp;
 begin
   { add your help code here }
-  writeln('Usage: ', ExeName, ' -h');
+  writeln('Usage: cube2mga <cubefile> [<mgafile>]');
 end;
 
 var
