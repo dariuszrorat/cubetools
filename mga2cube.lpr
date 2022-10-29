@@ -170,7 +170,7 @@ type
             for b := 0 to CubeSize - 1 do
             begin
               Writeln(OutFile,
-                StringReplace(Format('%8.6f %8.6f %8.6f',
+                StringReplace(Format('%11.9f %11.9f %11.9f',
                 [Data[i].R, Data[i].G, Data[i].B]), ',', '.', [rfReplaceAll]));
               i := i + CubeSize * CubeSize;
             end;

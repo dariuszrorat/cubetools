@@ -9,74 +9,16 @@
         <Filename Value="mga2cube.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="88"/>
-        <CursorPos Y="111"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="170"/>
+        <CursorPos X="11" Y="189"/>
         <UsageCount Value="34"/>
-        <Loaded Value="True"/>
       </Unit0>
     </Units>
-    <JumpHistory Count="15" HistoryIndex="14">
-      <Position1>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="49" Column="32" TopLine="25"/>
-      </Position1>
-      <Position2>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="9" Column="30"/>
-      </Position2>
-      <Position3>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="50" Column="30" TopLine="38"/>
-      </Position3>
-      <Position4>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="51" Column="12" TopLine="38"/>
-      </Position4>
-      <Position5>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="52" Column="14" TopLine="29"/>
-      </Position5>
-      <Position6>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="50" Column="32" TopLine="38"/>
-      </Position6>
-      <Position7>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="74" Column="13" TopLine="51"/>
-      </Position7>
-      <Position8>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="99" Column="5" TopLine="79"/>
-      </Position8>
-      <Position9>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="120" Column="17" TopLine="96"/>
-      </Position9>
-      <Position10>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="138" Column="56" TopLine="122"/>
-      </Position10>
-      <Position11>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="190" Column="80" TopLine="167"/>
-      </Position11>
-      <Position12>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="191" Column="53" TopLine="177"/>
-      </Position12>
-      <Position13>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="165" Column="35" TopLine="152"/>
-      </Position13>
-      <Position14>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="176" Column="15" TopLine="160"/>
-      </Position14>
-      <Position15>
-        <Filename Value="mga2cube.lpr"/>
-        <Caret Line="60" Column="10" TopLine="51"/>
-      </Position15>
-    </JumpHistory>
+    <General>
+      <ActiveWindowIndexAtStart Value="-1"/>
+    </General>
+    <JumpHistory HistoryIndex="-1"/>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes Count="0" ActiveMode=""/>

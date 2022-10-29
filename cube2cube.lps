@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="11"/>
+    <BuildModes Active="Release"/>
+    <Units Count="1">
+      <Unit0>
+        <Filename Value="cube2cube.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="204"/>
+        <CursorPos X="69" Y="227"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit0>
+    </Units>
+    <JumpHistory Count="7" HistoryIndex="6">
+      <Position1>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="174" Column="13" TopLine="160"/>
+      </Position1>
+      <Position2>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="175" Column="14" TopLine="158"/>
+      </Position2>
+      <Position3>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="296" Column="22" TopLine="276"/>
+      </Position3>
+      <Position4>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="57" Column="46" TopLine="55"/>
+      </Position4>
+      <Position5>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="134" TopLine="121"/>
+      </Position5>
+      <Position6>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="87" Column="36" TopLine="65"/>
+      </Position6>
+      <Position7>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="77" Column="15" TopLine="65"/>
+      </Position7>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>
