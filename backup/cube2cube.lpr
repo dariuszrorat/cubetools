@@ -27,7 +27,7 @@ type
     function ClampFloat(X: single): single;
     function FlattenCube(Level: integer; B: integer; G: integer; R: integer): integer;
     procedure WriteCube(FileName: string; Data: TArr1D; CubeLevel: integer;
-      DestSize: integer; ATitle: string);
+      DestSize: integer; Fmt: string; ATitle: string);
   protected
     procedure DoRun; override;
   public
@@ -71,7 +71,7 @@ type
   end;
 
   procedure TConsoleApplication.WriteCube(FileName: string;
-    Data: TArr1D; CubeLevel: integer; DestSize: integer; ATitle: string);
+    Data: TArr1D; CubeLevel: integer; DestSize: integer; Fmt: string; ATitle: string);
   var
     r, g, b: integer;
     PR, PG, PB: single;
@@ -84,10 +84,35 @@ type
     AssignFile(Handle, FileName);
     try
       Rewrite(Handle);
-      Writeln(Handle, 'TITLE "' + ATitle + '"');
-      Writeln(Handle, 'DOMAIN_MIN 0 0 0');
-      Writeln(Handle, 'DOMAIN_MAX 1 1 1');
-      Writeln(Handle, Format('LUT_3D_SIZE %d', [DestSize]));
+      case Fmt[1] of
+        'A':
+          begin
+            Writeln(Handle, 'TITLE "' + ATitle + '"');
+            Writeln(Handle, 'DOMAIN_MIN 0 0 0');
+            Writeln(Handle, 'DOMAIN_MAX 1 1 1');
+            Writeln(Handle, Format('LUT_3D_SIZE %d', [DestSize]));
+          end;
+        'D':
+          begin
+            Writeln(Handle, '# ' + ATitle);
+            Writeln(Handle, Format('LUT_3D_SIZE %d', [DestSize]));
+            Writeln(Handle, 'LUT_3D_INPUT_RANGE 0.0 1.0');
+          end;
+        'T':
+          begin
+            Writeln(Handle, '# Truelight Cube v2.0');
+            Writeln(Handle, '# lutLength 2');
+            Writeln(Handle, '# iDims     3');
+            Writeln(Handle, '# oDims     3');
+            Writeln(Handle, Format('# width     %d %d %d', [DestSize, DestSize, DestSize]));
+            Writeln(Handle);
+            Writeln(Handle, '# InputLUT');
+            Writeln(Handle, '0.000000000 0.000000000 0.000000000');
+            Writeln(Handle, StringReplace(Format('%.9f %.9f %.9f',[single(DestSize-1), single(DestSize-1), single(DestSize-1)]), ',', '.', [rfReplaceAll]));
+            Writeln(Handle);
+            Writeln(Handle, '# Cube');
+          end;
+      end;
 
       for b := 0 to DestSize - 1 do
       begin
@@ -156,6 +181,7 @@ type
     Fn: string;
     Ext: string;
     Opt: string;
+    OutputFormat: string;
     P: integer;
     N: integer;
     i: integer;
@@ -165,7 +191,7 @@ type
   begin
 
     // quick check parameters
-    ErrorMsg := CheckOptions('hlt', ['help', 'level', 'text']);
+    ErrorMsg := CheckOptions('hlto', ['help', 'level', 'text', 'output']);
     if ErrorMsg <> '' then
     begin
       ShowException(Exception.Create(ErrorMsg));
@@ -184,7 +210,9 @@ type
     { add your program here }
     SrcSize := 27;
     DestSize := 8;
-    NonOpts := GetNonOptions('hl:t', ['help', 'level', 'text']);
+    LUTTitle := '';
+    OutputFormat := 'A';
+    NonOpts := GetNonOptions('hl:to:', ['help', 'level', 'text', 'output']);
     Opt := Trim(GetOptionValue('l', 'level'));
     if (Opt <> '') then
       DestSize := StrToInt(Opt);
@@ -193,6 +221,17 @@ type
       Writeln('Hald CLUT level must be between 2 and 64');
       Terminate;
       Exit;
+    end;
+    Opt := Trim(GetOptionValue('o', 'output'));
+    if (Opt <> '') then
+    begin
+      OutputFormat := Upcase(Opt);
+      if (OutputFormat <> 'A') and (OutputFormat <> 'D') and (OutputFormat <> 'T') then
+      begin
+        Writeln('Unsupported output format');
+        Terminate;
+        Exit;
+      end;
     end;
 
     InputFileName := GetNonOptionValue(0, NonOpts);
@@ -257,7 +296,7 @@ type
           Exit;
         end;
 
-        WriteCube(OutputFileName, Data, SrcSize, DestSize, LUTTitle);
+        WriteCube(OutputFileName, Data, SrcSize, DestSize, OutputFormat, LUTTitle);
       except
         on E: Exception do
         begin
@@ -292,6 +331,8 @@ type
     writeln('OPTIONS:');
     writeln;
     writeln('    -l level  set cube level');
+    writeln('    -o fmt    set output format');
+    writeln('       formats: A = Adobe, D = Davinci, T = Truelight');
   end;
 
 var
