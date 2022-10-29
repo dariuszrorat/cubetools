@@ -319,9 +319,10 @@ type
   procedure TConsoleApplication.WriteHelp;
   begin
     { add your help code here }
-    writeln('Usage: ', ExeName, ' -h');
+    writeln('Usage: cube2ppm [options] <cubefile> [<ppmfile>]');
     writeln;
     writeln('OPTIONS:');
+    writeln;
     writeln('    -t        use PPM text mode');
     writeln('    -l level  set HALD CLUT level');
   end;
