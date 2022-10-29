@@ -141,20 +141,18 @@ type
             if TextMode then
             begin
               Write(Handle, Format('%d %d %d ', [PR, PG, PB]));
+              PN := PN + 1;
+              if PN = 15 then
+              begin
+                Write(Handle, #10);
+                PN := 0;
+              end;
             end
             else
             begin
               Write(Handle, char(PR));
               Write(Handle, char(PG));
               Write(Handle, char(PB));
-            end;
-
-            PN := PN + 1;
-            if PN = 15 then
-            begin
-              if TextMode then
-                Write(Handle, #10);
-              PN := 0;
             end;
           end;
         end;
@@ -247,6 +245,7 @@ type
 
     AssignFile(InFile, InputFileName);
     try
+      try
       Reset(InFile);
       InFileOpened := True;
       while not EOF(InFile) do
@@ -295,7 +294,12 @@ type
       end;
 
       WriteHaldClut(OutputFileName, Data, CubeSize, HaldLevel, PPMTextMode);
-
+      except
+        on E: Exception do
+        begin
+          Writeln(E.Message);
+        end;
+      end;
     finally
       if InFileOpened then
         CloseFile(InFile);
