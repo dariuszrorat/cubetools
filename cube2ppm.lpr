@@ -272,7 +272,7 @@ type
           end;
           if Pos('LUT_1D_SIZE', Line) = 1 then
           begin
-            Writeln('CUBE 1D format is not supported');
+            Writeln('LUT 1D format is not supported');
             Terminate;
             Exit;
           end;

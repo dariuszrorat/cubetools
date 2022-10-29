@@ -184,6 +184,7 @@ type
     { add your program here }
     SrcSize := 27;
     DestSize := 8;
+    LUTTitle := '';
     NonOpts := GetNonOptions('hl:t', ['help', 'level', 'text']);
     Opt := Trim(GetOptionValue('l', 'level'));
     if (Opt <> '') then
@@ -236,7 +237,7 @@ type
           end;
           if Pos('LUT_1D_SIZE', Line) = 1 then
           begin
-            Writeln('CUBE 1D format is not supported');
+            Writeln('LUT 1D format is not supported');
             Terminate;
             Exit;
           end;

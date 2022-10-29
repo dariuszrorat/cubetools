@@ -73,8 +73,8 @@ type
     Result := B * Level * Level + G * Level + R;
   end;
 
-  procedure TConsoleApplication.WriteHaldClut(FileName: string; Data: TArr1D;
-    CubeLevel: integer; HaldLevel: integer; TextMode: boolean);
+  procedure TConsoleApplication.WriteHaldClut(FileName: string;
+    Data: TArr1D; CubeLevel: integer; HaldLevel: integer; TextMode: boolean);
   var
     r, g, b: integer;
     PR, PG, PB, PN: integer;
@@ -246,54 +246,54 @@ type
     AssignFile(InFile, InputFileName);
     try
       try
-      Reset(InFile);
-      InFileOpened := True;
-      while not EOF(InFile) do
-      begin
-        Readln(InFile, Line);
-        Line := Trim(Line);
-
-        if RAWData and (Line <> '') and (Pos('#', Line) = 0) then
+        Reset(InFile);
+        InFileOpened := True;
+        while not EOF(InFile) do
         begin
-          Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
-          Parts := Line.Split(#9#32);
-          RGB.R := StrToFloat(Parts[Low(Parts) + 0]);
-          RGB.G := StrToFloat(Parts[Low(Parts) + 1]);
-          RGB.B := StrToFloat(Parts[Low(Parts) + 2]);
-          Data[i] := RGB;
-          i := i + 1;
+          Readln(InFile, Line);
+          Line := Trim(Line);
+
+          if RAWData and (Line <> '') and (Pos('#', Line) = 0) then
+          begin
+            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
+            Parts := Line.Split(#9#32);
+            RGB.R := StrToFloat(Parts[Low(Parts) + 0]);
+            RGB.G := StrToFloat(Parts[Low(Parts) + 1]);
+            RGB.B := StrToFloat(Parts[Low(Parts) + 2]);
+            Data[i] := RGB;
+            i := i + 1;
+          end;
+
+          if Pos('TITLE', Line) = 1 then
+          begin
+            Parts := Line.Split(' ');
+            LUTTitle := Parts[High(Parts)];
+            LUTTitle := LUTTitle.Trim(['"']);
+          end;
+          if Pos('LUT_1D_SIZE', Line) = 1 then
+          begin
+            Writeln('CUBE 1D format is not supported');
+            Terminate;
+            Exit;
+          end;
+          if Pos('LUT_3D_SIZE', Line) = 1 then
+          begin
+            Parts := Line.Split(' ');
+            CubeSize := StrToInt(Parts[High(Parts)]);
+            RAWData := True;
+            N := CubeSize * CubeSize * CubeSize;
+            SetLength(Data, N);
+          end;
         end;
 
-        if Pos('TITLE', Line) = 1 then
+        if not RAWData then
         begin
-          Parts := Line.Split(' ');
-          LUTTitle := Parts[High(Parts)];
-          LUTTitle := LUTTitle.Trim(['"']);
-        end;
-        if Pos('LUT_1D_SIZE', Line) = 1 then
-        begin
-          Writeln('CUBE 1D format is not supported');
+          Writeln('Unsupported CUBE format');
           Terminate;
           Exit;
         end;
-        if Pos('LUT_3D_SIZE', Line) = 1 then
-        begin
-          Parts := Line.Split(' ');
-          CubeSize := StrToInt(Parts[High(Parts)]);
-          RAWData := True;
-          N := CubeSize * CubeSize * CubeSize;
-          SetLength(Data, N);
-        end;
-      end;
 
-      if not RAWData then
-      begin
-        Writeln('Unsupported CUBE format');
-        Terminate;
-        Exit;
-      end;
-
-      WriteHaldClut(OutputFileName, Data, CubeSize, HaldLevel, PPMTextMode);
+        WriteHaldClut(OutputFileName, Data, CubeSize, HaldLevel, PPMTextMode);
       except
         on E: Exception do
         begin
@@ -335,7 +335,7 @@ var
   Application: TConsoleApplication;
 begin
   Application := TConsoleApplication.Create(nil);
-  Application.Title:='Console Application';
+  Application.Title := 'Console Application';
   Application.Run;
   Application.Free;
 end.

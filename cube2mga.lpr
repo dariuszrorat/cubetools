@@ -90,6 +90,7 @@ type
     { add your program here }
     CubeSize := 27;
     Max := 65535;
+    LUTTitle := '';
     NonOpts := GetNonOptions('h', ['help']);
     InputFileName := GetNonOptionValue(0, NonOpts);
     OutputFileName := GetNonOptionValue(1, NonOpts);
@@ -135,7 +136,7 @@ type
           end;
           if Pos('LUT_1D_SIZE', Line) = 1 then
           begin
-            Writeln('CUBE 1D format is not supported');
+            Writeln('LUT 1D format is not supported');
             Terminate;
             Exit;
           end;

@@ -130,7 +130,7 @@ type
               ScaleB * (Data[FlattenCube(CubeLevel, NextB, IndexG, IndexR)].B -
               Data[FlattenCube(CubeLevel, IndexB, IndexG, IndexR)].B)));
 
-            Writeln(Handle, StringReplace(Format('%12.9f %12.9f %12.9f', [PR, PG, PB]), ',', '.', [rfReplaceAll]));
+            Writeln(Handle, StringReplace(Format('%11.9f %11.9f %11.9f', [PR, PG, PB]), ',', '.', [rfReplaceAll]));
           end;
         end;
       end;
@@ -236,7 +236,7 @@ type
           end;
           if Pos('LUT_1D_SIZE', Line) = 1 then
           begin
-            Writeln('CUBE 1D format is not supported');
+            Writeln('LUT 1D format is not supported');
             Terminate;
             Exit;
           end;
