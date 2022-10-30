@@ -89,7 +89,7 @@ type
 
     { add your program here }
     CubeSize := 27;
-    Max := 65535;
+    Max := 65536;
     NonOpts := GetNonOptions('h', ['help']);
     InputFileName := GetNonOptionValue(0, NonOpts);
     OutputFileName := GetNonOptionValue(1, NonOpts);

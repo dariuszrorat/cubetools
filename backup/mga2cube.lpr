@@ -158,7 +158,7 @@ type
 
         Writeln(OutFile, 'TITLE "' + LUTTitle + '"');
         Writeln(OutFile, StringReplace(Format('DOMAIN_MIN %.1f %.1f %.1f', [0.0, 0.0, 0.0]), ',', '.', [rfReplaceAll]));
-        Writeln(OutFile, StringReplace(Format('DOMAIN_MAX %.1f %.1f %.1f', [Max / 65535, Max / 65535, Max / 65535]), ',', '.', [rfReplaceAll]));
+        Writeln(OutFile, StringReplace(Format('DOMAIN_MAX %.1f %.1f %.1f', [Max / 65536, Max / 65536, Max / 65536]), ',', '.', [rfReplaceAll]));
         Writeln(OutFile, 'LUT_3D_SIZE ' + IntToStr(CubeSize));
 
         i := 0;
