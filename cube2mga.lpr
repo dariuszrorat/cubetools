@@ -117,17 +117,6 @@ type
           Readln(InFile, Line);
           Line := Trim(Line);
 
-          if RAWData and (Line <> '') and (Pos('#', Line) = 0) then
-          begin
-            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
-            Parts := Line.Split(#9#32);
-            RGB.R := Round(Max * StrToFloat(Parts[Low(Parts) + 0]));
-            RGB.G := Round(Max * StrToFloat(Parts[Low(Parts) + 1]));
-            RGB.B := Round(Max * StrToFloat(Parts[Low(Parts) + 2]));
-            Data[i] := RGB;
-            i := i + 1;
-          end;
-
           if Pos('TITLE', Line) = 1 then
           begin
             Parts := Line.Split(' ');
@@ -144,9 +133,25 @@ type
           begin
             Parts := Line.Split(' ');
             CubeSize := StrToInt(Parts[High(Parts)]);
+          end;
+          if (not RAWData) and (Line <> '') and
+            (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          begin
             RAWData := True;
             N := CubeSize * CubeSize * CubeSize;
             SetLength(Data, N);
+          end;
+
+          if RAWData and (Line <> '') and
+            (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          begin
+            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
+            Parts := Line.Split(#9#32);
+            RGB.R := Round(Max * StrToFloat(Parts[Low(Parts) + 0]));
+            RGB.G := Round(Max * StrToFloat(Parts[Low(Parts) + 1]));
+            RGB.B := Round(Max * StrToFloat(Parts[Low(Parts) + 2]));
+            Data[i] := RGB;
+            i := i + 1;
           end;
         end;
 

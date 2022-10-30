@@ -120,16 +120,6 @@ type
         begin
           Readln(InFile, Line);
 
-          if RAWData and (Trim(Line) <> '') then
-          begin
-            Parts := Line.Split(#9#32);
-            RGB.R := StrToInt(Parts[Low(Parts) + 1]) / Max;
-            RGB.G := StrToInt(Parts[Low(Parts) + 2]) / Max;
-            RGB.B := StrToInt(Parts[Low(Parts) + 3]) / Max;
-            Data[i] := RGB;
-            i := i + 1;
-          end;
-
           if Pos('#title', Trim(Line)) = 1 then
           begin
             Parts := Line.Split(' ');
@@ -146,17 +136,29 @@ type
             Parts := Line.Split(' ');
             Max := StrToInt(Parts[High(Parts)]) - 1;
           end;
-          if Pos('values', Trim(Line)) = 1 then
+          if (not RAWData) and (Line <> '') and
+            (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
           begin
             RAWData := True;
             N := CubeSize * CubeSize * CubeSize;
             SetLength(Data, N);
           end;
+
+          if RAWData and (Line <> '') and
+            (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          begin
+            Parts := Line.Split(#9#32);
+            RGB.R := StrToInt(Parts[Low(Parts) + 1]) / Max;
+            RGB.G := StrToInt(Parts[Low(Parts) + 2]) / Max;
+            RGB.B := StrToInt(Parts[Low(Parts) + 3]) / Max;
+            Data[i] := RGB;
+            i := i + 1;
+          end;
         end;
 
         Writeln(OutFile, 'TITLE "' + LUTTitle + '"');
-        Writeln(OutFile, 'DOMAIN_MIN 0 0 0');
-        Writeln(OutFile, 'DOMAIN_MAX 1 1 1');
+        Writeln(OutFile, StringReplace(Format('DOMAIN_MIN %.1f %.1f %.1f', [0.0, 0.0, 0.0]), ',', '.', [rfReplaceAll]));
+        Writeln(OutFile, StringReplace(Format('DOMAIN_MAX %.1f %.1f %.1f', [Max / 65536, Max / 65536, Max / 65536]), ',', '.', [rfReplaceAll]));
         Writeln(OutFile, 'LUT_3D_SIZE ' + IntToStr(CubeSize));
 
         i := 0;

@@ -18,6 +18,7 @@ type
   end;
 
   TArr1D = array of TRGB;
+  TArr3f = array[0..2] of single;
 
   { TConsoleApplication }
 
@@ -27,7 +28,7 @@ type
     function ClampFloat(X: single): single;
     function FlattenCube(Level: integer; B: integer; G: integer; R: integer): integer;
     procedure WriteCube(FileName: string; Data: TArr1D; CubeLevel: integer;
-      DestSize: integer; Fmt: string; ATitle: string);
+      DestSize: integer; Fmt: string; ATitle: string; DomainMin: TArr3f; DomainMax: TArr3f);
   protected
     procedure DoRun; override;
   public
@@ -71,7 +72,7 @@ type
   end;
 
   procedure TConsoleApplication.WriteCube(FileName: string;
-    Data: TArr1D; CubeLevel: integer; DestSize: integer; Fmt: string; ATitle: string);
+    Data: TArr1D; CubeLevel: integer; DestSize: integer; Fmt: string; ATitle: string; DomainMin: TArr3f; DomainMax: TArr3f);
   var
     r, g, b: integer;
     PR, PG, PB: single;
@@ -88,29 +89,15 @@ type
         'A':
           begin
             Writeln(Handle, 'TITLE "' + ATitle + '"');
-            Writeln(Handle, 'DOMAIN_MIN 0 0 0');
-            Writeln(Handle, 'DOMAIN_MAX 1 1 1');
+            Writeln(Handle, StringReplace(Format('DOMAIN_MIN %.1f %.1f %.1f',[DomainMin[0], DomainMin[1], DomainMin[2]]), ',', '.', [rfReplaceAll]));
+            Writeln(Handle, StringReplace(Format('DOMAIN_MAX %.1f %.1f %.1f',[DomainMax[0], DomainMax[1], DomainMax[2]]), ',', '.', [rfReplaceAll]));
             Writeln(Handle, Format('LUT_3D_SIZE %d', [DestSize]));
           end;
         'D':
           begin
             Writeln(Handle, '# ' + ATitle);
             Writeln(Handle, Format('LUT_3D_SIZE %d', [DestSize]));
-            Writeln(Handle, 'LUT_3D_INPUT_RANGE 0.0 1.0');
-          end;
-        'T':
-          begin
-            Writeln(Handle, '# Truelight Cube v2.0');
-            Writeln(Handle, '# lutLength 2');
-            Writeln(Handle, '# iDims     3');
-            Writeln(Handle, '# oDims     3');
-            Writeln(Handle, Format('# width     %d %d %d', [DestSize, DestSize, DestSize]));
-            Writeln(Handle);
-            Writeln(Handle, '# InputLUT');
-            Writeln(Handle, '0.000000000 0.000000000 0.000000000');
-            Writeln(Handle, StringReplace(Format('%.9f %.9f %.9f',[single(DestSize-1), single(DestSize-1), single(DestSize-1)]), ',', '.', [rfReplaceAll]));
-            Writeln(Handle);
-            Writeln(Handle, '# Cube');
+            Writeln(Handle, StringReplace(Format('LUT_3D_INPUT_RANGE %.1f %.1f',[DomainMin[0], DomainMax[0]]), ',', '.', [rfReplaceAll]));
           end;
       end;
 
@@ -178,16 +165,15 @@ type
     RAWData: boolean;
     LUTTitle: string;
     Line: string;
-    Fn: string;
-    Ext: string;
     Opt: string;
     OutputFormat: string;
-    P: integer;
     N: integer;
     i: integer;
     Parts: TStringArray;
     RGB: TRGB;
     Data: TArr1D;
+    DomainMin: TArr3f = (0.0, 0.0, 0.0);
+    DomainMax: TArr3f = (1.0, 1.0, 1.0);
   begin
 
     // quick check parameters
@@ -256,22 +242,27 @@ type
           Readln(InFile, Line);
           Line := Trim(Line);
 
-          if RAWData and (Line <> '') and (Pos('#', Line) = 0) then
-          begin
-            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
-            Parts := Line.Split(#9#32);
-            RGB.R := StrToFloat(Parts[Low(Parts) + 0]);
-            RGB.G := StrToFloat(Parts[Low(Parts) + 1]);
-            RGB.B := StrToFloat(Parts[Low(Parts) + 2]);
-            Data[i] := RGB;
-            i := i + 1;
-          end;
-
           if Pos('TITLE', Line) = 1 then
           begin
             Parts := Line.Split(' ');
             LUTTitle := Parts[High(Parts)];
             LUTTitle := LUTTitle.Trim(['"']);
+          end;
+          if Pos('DOMAIN_MIN', Line) = 1 then
+          begin
+            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
+            Parts := Line.Split(' ');
+            DomainMin[0] := StrToFloat(Parts[1]);
+            DomainMin[1] := StrToFloat(Parts[2]);
+            DomainMin[2] := StrToFloat(Parts[3]);
+          end;
+          if Pos('DOMAIN_MAX', Line) = 1 then
+          begin
+            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
+            Parts := Line.Split(' ');
+            DomainMax[0] := StrToFloat(Parts[1]);
+            DomainMax[1] := StrToFloat(Parts[2]);
+            DomainMax[2] := StrToFloat(Parts[3]);
           end;
           if Pos('LUT_1D_SIZE', Line) = 1 then
           begin
@@ -283,9 +274,23 @@ type
           begin
             Parts := Line.Split(' ');
             SrcSize := StrToInt(Parts[High(Parts)]);
+          end;
+          if (not RAWData) and (Line <> '') and (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          begin
             RAWData := True;
             N := SrcSize * SrcSize * SrcSize;
             SetLength(Data, N);
+          end;
+
+          if RAWData and (Line <> '') and (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          begin
+            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
+            Parts := Line.Split(#9#32);
+            RGB.R := StrToFloat(Parts[Low(Parts) + 0]);
+            RGB.G := StrToFloat(Parts[Low(Parts) + 1]);
+            RGB.B := StrToFloat(Parts[Low(Parts) + 2]);
+            Data[i] := RGB;
+            i := i + 1;
           end;
         end;
 
@@ -296,7 +301,7 @@ type
           Exit;
         end;
 
-        WriteCube(OutputFileName, Data, SrcSize, DestSize, OutputFormat, LUTTitle);
+        WriteCube(OutputFileName, Data, SrcSize, DestSize, OutputFormat, LUTTitle, DomainMin, DomainMax);
       except
         on E: Exception do
         begin
@@ -332,7 +337,8 @@ type
     writeln;
     writeln('    -l level  set cube level');
     writeln('    -o fmt    set output format');
-    writeln('       formats: A = Adobe, D = Davinci, T = Truelight');
+    writeln;
+    writeln('       output formats: A = Adobe (default), D = Davinci');
   end;
 
 var

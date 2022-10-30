@@ -253,17 +253,6 @@ type
           Readln(InFile, Line);
           Line := Trim(Line);
 
-          if RAWData and (Line <> '') and (Pos('#', Line) = 0) then
-          begin
-            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
-            Parts := Line.Split(#9#32);
-            RGB.R := StrToFloat(Parts[Low(Parts) + 0]);
-            RGB.G := StrToFloat(Parts[Low(Parts) + 1]);
-            RGB.B := StrToFloat(Parts[Low(Parts) + 2]);
-            Data[i] := RGB;
-            i := i + 1;
-          end;
-
           if Pos('TITLE', Line) = 1 then
           begin
             Parts := Line.Split(' ');
@@ -272,17 +261,33 @@ type
           end;
           if Pos('LUT_1D_SIZE', Line) = 1 then
           begin
-            Writeln('CUBE 1D format is not supported');
+            Writeln('LUT 1D format is not supported');
             Terminate;
             Exit;
           end;
           if Pos('LUT_3D_SIZE', Line) = 1 then
           begin
             Parts := Line.Split(' ');
-            CubeSize := StrToInt(Parts[High(Parts)]);
+            SrcSize := StrToInt(Parts[High(Parts)]);
+          end;
+          if (not RAWData) and (Line <> '') and
+            (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          begin
             RAWData := True;
-            N := CubeSize * CubeSize * CubeSize;
+            N := SrcSize * SrcSize * SrcSize;
             SetLength(Data, N);
+          end;
+
+          if RAWData and (Line <> '') and
+            (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          begin
+            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
+            Parts := Line.Split(#9#32);
+            RGB.R := StrToFloat(Parts[Low(Parts) + 0]);
+            RGB.G := StrToFloat(Parts[Low(Parts) + 1]);
+            RGB.B := StrToFloat(Parts[Low(Parts) + 2]);
+            Data[i] := RGB;
+            i := i + 1;
           end;
         end;
 

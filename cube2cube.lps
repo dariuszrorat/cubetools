@@ -9,13 +9,13 @@
         <Filename Value="cube2cube.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="322"/>
-        <CursorPos X="27" Y="336"/>
-        <UsageCount Value="21"/>
+        <TopLine Value="339"/>
+        <CursorPos X="5" Y="363"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
       </Unit0>
     </Units>
-    <JumpHistory Count="11" HistoryIndex="10">
+    <JumpHistory Count="16" HistoryIndex="15">
       <Position1>
         <Filename Value="cube2cube.lpr"/>
         <Caret Line="174" Column="13" TopLine="160"/>
@@ -60,6 +60,26 @@
         <Filename Value="cube2cube.lpr"/>
         <Caret Line="204" Column="48" TopLine="192"/>
       </Position11>
+      <Position12>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="178" Column="39" TopLine="176"/>
+      </Position12>
+      <Position13>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="179" Column="37" TopLine="167"/>
+      </Position13>
+      <Position14>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="157" Column="68" TopLine="144"/>
+      </Position14>
+      <Position15>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="291" Column="40" TopLine="279"/>
+      </Position15>
+      <Position16>
+        <Filename Value="cube2cube.lpr"/>
+        <Caret Line="285" Column="11" TopLine="274"/>
+      </Position16>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
