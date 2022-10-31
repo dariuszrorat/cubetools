@@ -9,13 +9,22 @@
         <Filename Value="mga2cube.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="140"/>
-        <CursorPos Y="162"/>
+        <TopLine Value="51"/>
+        <CursorPos X="15" Y="71"/>
         <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit0>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="mga2cube.lpr"/>
+        <Caret Line="20" Column="9"/>
+      </Position1>
+      <Position2>
+        <Filename Value="mga2cube.lpr"/>
+        <Caret Line="14" Column="7"/>
+      </Position2>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes Count="0" ActiveMode=""/>

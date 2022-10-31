@@ -9,12 +9,15 @@
         <Filename Value="mga2cube.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="140"/>
-        <CursorPos X="114" Y="161"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="51"/>
+        <CursorPos X="15" Y="71"/>
         <UsageCount Value="34"/>
-        <Loaded Value="True"/>
       </Unit0>
     </Units>
+    <General>
+      <ActiveWindowIndexAtStart Value="-1"/>
+    </General>
     <JumpHistory HistoryIndex="-1"/>
     <RunParams>
       <FormatVersion Value="2"/>

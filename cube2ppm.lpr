@@ -11,13 +11,13 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
 
 type
 
-  TRGB = record
+  TRGBSingle = record
     R: single;
     G: single;
     B: single;
   end;
 
-  TArr1D = array of TRGB;
+  TRGBSingleDynArray = array of TRGBSingle;
 
   { TConsoleApplication }
 
@@ -26,7 +26,7 @@ type
     function GetNonOptionValue(Index: integer; Opts: TStringArray): string;
     function ClampToByteInt(X: single): integer;
     function FlattenCube(Level: integer; B: integer; G: integer; R: integer): integer;
-    procedure WriteHaldClut(FileName: string; Data: TArr1D; CubeLevel: integer;
+    procedure WriteHaldClut(FileName: string; Data: TRGBSingleDynArray; CubeLevel: integer;
       HaldLevel: integer; TextMode: boolean);
   protected
     procedure DoRun; override;
@@ -74,7 +74,7 @@ type
   end;
 
   procedure TConsoleApplication.WriteHaldClut(FileName: string;
-    Data: TArr1D; CubeLevel: integer; HaldLevel: integer; TextMode: boolean);
+    Data: TRGBSingleDynArray; CubeLevel: integer; HaldLevel: integer; TextMode: boolean);
   var
     r, g, b: integer;
     PR, PG, PB, PN: integer;
@@ -183,8 +183,8 @@ type
     N: integer;
     i: integer;
     Parts: TStringArray;
-    RGB: TRGB;
-    Data: TArr1D;
+    RGB: TRGBSingle;
+    Data: TRGBSingleDynArray;
     PPMTextMode: boolean;
   begin
 

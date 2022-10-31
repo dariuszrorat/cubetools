@@ -17,7 +17,7 @@ type
     B: single;
   end;
 
-  TArr1D = array of TRGB;
+  TRGBSingleDynArray = array of TRGB;
 
   { TConsoleApplication }
 
@@ -68,7 +68,7 @@ type
     i, j, k, r, g, b: integer;
     Parts: TStringArray;
     RGB: TRGB;
-    Data: TArr1D;
+    Data: TRGBSingleDynArray;
   begin
     // quick check parameters
     ErrorMsg := CheckOptions('h', 'help');
@@ -89,7 +89,7 @@ type
 
     { add your program here }
     CubeSize := 27;
-    Max := 65535;
+    Max := 65536;
     NonOpts := GetNonOptions('h', ['help']);
     InputFileName := GetNonOptionValue(0, NonOpts);
     OutputFileName := GetNonOptionValue(1, NonOpts);

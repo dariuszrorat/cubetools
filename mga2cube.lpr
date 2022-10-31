@@ -11,13 +11,13 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
 
 type
 
-  TRGB = record
+  TRGBSingle = record
     R: single;
     G: single;
     B: single;
   end;
 
-  TArr1D = array of TRGB;
+  TRGBSingleDynArray = array of TRGBSingle;
 
   { TConsoleApplication }
 
@@ -67,8 +67,8 @@ type
     N: integer;
     i, j, k, r, g, b: integer;
     Parts: TStringArray;
-    RGB: TRGB;
-    Data: TArr1D;
+    RGB: TRGBSingle;
+    Data: TRGBSingleDynArray;
   begin
     // quick check parameters
     ErrorMsg := CheckOptions('h', 'help');

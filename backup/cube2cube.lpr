@@ -11,13 +11,13 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
 
 type
 
-  TRGB = record
+  TRGBSingle = record
     R: single;
     G: single;
     B: single;
   end;
 
-  TArr1D = array of TRGB;
+  TRGBSingleDynArray = array of TRGBSingle;
   TArr3f = array[0..2] of single;
 
   { TConsoleApplication }
@@ -27,8 +27,9 @@ type
     function GetNonOptionValue(Index: integer; Opts: TStringArray): string;
     function ClampFloat(X: single): single;
     function FlattenCube(Level: integer; B: integer; G: integer; R: integer): integer;
-    procedure WriteCube(FileName: string; Data: TArr1D; CubeLevel: integer;
-      DestSize: integer; Fmt: string; ATitle: string; DomainMin: TArr3f; DomainMax: TArr3f);
+    procedure WriteCube(FileName: string; Data: TRGBSingleDynArray; CubeLevel: integer;
+      DestSize: integer; Fmt: string; ATitle: string; DomainMin: TArr3f;
+      DomainMax: TArr3f);
   protected
     procedure DoRun; override;
   public
@@ -71,8 +72,9 @@ type
     Result := B * Level * Level + G * Level + R;
   end;
 
-  procedure TConsoleApplication.WriteCube(FileName: string;
-    Data: TArr1D; CubeLevel: integer; DestSize: integer; Fmt: string; ATitle: string; DomainMin: TArr3f; DomainMax: TArr3f);
+  procedure TConsoleApplication.WriteCube(FileName: string; Data: TRGBSingleDynArray;
+    CubeLevel: integer; DestSize: integer; Fmt: string; ATitle: string;
+    DomainMin: TArr3f; DomainMax: TArr3f);
   var
     r, g, b: integer;
     PR, PG, PB: single;
@@ -87,18 +89,24 @@ type
       Rewrite(Handle);
       case Fmt[1] of
         'A':
-          begin
-            Writeln(Handle, 'TITLE "' + ATitle + '"');
-            Writeln(Handle, StringReplace(Format('DOMAIN_MIN %.1f %.1f %.1f',[DomainMin[0], DomainMin[1], DomainMin[2]]), ',', '.', [rfReplaceAll]));
-            Writeln(Handle, StringReplace(Format('DOMAIN_MAX %.1f %.1f %.1f',[DomainMax[0], DomainMax[1], DomainMax[2]]), ',', '.', [rfReplaceAll]));
-            Writeln(Handle, Format('LUT_3D_SIZE %d', [DestSize]));
-          end;
+        begin
+          Writeln(Handle, 'TITLE "' + ATitle + '"');
+          Writeln(Handle, StringReplace(
+            Format('DOMAIN_MIN %.1f %.1f %.1f', [DomainMin[0], DomainMin[1], DomainMin[2]]),
+            ',', '.', [rfReplaceAll]));
+          Writeln(Handle, StringReplace(
+            Format('DOMAIN_MAX %.1f %.1f %.1f', [DomainMax[0], DomainMax[1], DomainMax[2]]),
+            ',', '.', [rfReplaceAll]));
+          Writeln(Handle, Format('LUT_3D_SIZE %d', [DestSize]));
+        end;
         'D':
-          begin
-            Writeln(Handle, '# ' + ATitle);
-            Writeln(Handle, Format('LUT_3D_SIZE %d', [DestSize]));
-            Writeln(Handle, StringReplace(Format('LUT_3D_INPUT_RANGE %.1f %.1f',[DomainMin[0], DomainMax[0]]), ',', '.', [rfReplaceAll]));
-          end;
+        begin
+          Writeln(Handle, '# ' + ATitle);
+          Writeln(Handle, Format('LUT_3D_SIZE %d', [DestSize]));
+          Writeln(Handle, StringReplace(
+            Format('LUT_3D_INPUT_RANGE %.1f %.1f', [DomainMin[0], DomainMax[0]]),
+            ',', '.', [rfReplaceAll]));
+        end;
       end;
 
       for b := 0 to DestSize - 1 do
@@ -107,12 +115,12 @@ type
         begin
           for r := 0 to DestSize - 1 do
           begin
-            OffsetR := (1.0 / (single(DestSize) - 1.0)) *
-              r * (single(CubeLevel) - 1.0);
-            OffsetG := (1.0 / (single(DestSize) - 1.0)) *
-              g * (single(CubeLevel) - 1.0);
-            OffsetB := (1.0 / (single(DestSize) - 1.0)) *
-              b * (single(CubeLevel) - 1.0);
+            OffsetR := (1.0 / (single(DestSize) - 1.0)) * r *
+              (single(CubeLevel) - 1.0);
+            OffsetG := (1.0 / (single(DestSize) - 1.0)) * g *
+              (single(CubeLevel) - 1.0);
+            OffsetB := (1.0 / (single(DestSize) - 1.0)) * b *
+              (single(CubeLevel) - 1.0);
             IndexR := Floor(OffsetR);
             IndexG := Floor(OffsetG);
             IndexB := Floor(OffsetB);
@@ -142,7 +150,8 @@ type
               ScaleB * (Data[FlattenCube(CubeLevel, NextB, IndexG, IndexR)].B -
               Data[FlattenCube(CubeLevel, IndexB, IndexG, IndexR)].B)));
 
-            Writeln(Handle, StringReplace(Format('%11.9f %11.9f %11.9f', [PR, PG, PB]), ',', '.', [rfReplaceAll]));
+            Writeln(Handle, StringReplace(Format('%11.9f %11.9f %11.9f', [PR, PG, PB]),
+              ',', '.', [rfReplaceAll]));
           end;
         end;
       end;
@@ -171,7 +180,7 @@ type
     i: integer;
     Parts: TStringArray;
     RGB: TRGB;
-    Data: TArr1D;
+    Data: TRGBSingleDynArray;
     DomainMin: TArr3f = (0.0, 0.0, 0.0);
     DomainMax: TArr3f = (1.0, 1.0, 1.0);
   begin
@@ -275,14 +284,16 @@ type
             Parts := Line.Split(' ');
             SrcSize := StrToInt(Parts[High(Parts)]);
           end;
-          if (not RAWData) and (Line <> '') and (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          if (not RAWData) and (Line <> '') and
+            (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
           begin
             RAWData := True;
             N := SrcSize * SrcSize * SrcSize;
             SetLength(Data, N);
           end;
 
-          if RAWData and (Line <> '') and (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          if RAWData and (Line <> '') and
+            (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
           begin
             Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
             Parts := Line.Split(#9#32);
@@ -301,7 +312,8 @@ type
           Exit;
         end;
 
-        WriteCube(OutputFileName, Data, SrcSize, DestSize, OutputFormat, LUTTitle, DomainMin, DomainMax);
+        WriteCube(OutputFileName, Data, SrcSize, DestSize, OutputFormat,
+          LUTTitle, DomainMin, DomainMax);
       except
         on E: Exception do
         begin
@@ -345,8 +357,7 @@ var
   Application: TConsoleApplication;
 begin
   Application := TConsoleApplication.Create(nil);
-  Application.Title:='Console Application';
+  Application.Title := 'Console Application';
   Application.Run;
   Application.Free;
 end.
-

@@ -11,13 +11,13 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
 
 type
 
-  TRGB = record
+  TRGBSingle = record
     R: single;
     G: single;
     B: single;
   end;
 
-  TArr1D = array of TRGB;
+  TRGBSingleDynArray = array of TRGBSingle;
   TArr3f = array[0..2] of single;
 
   { TConsoleApplication }
@@ -27,7 +27,7 @@ type
     function GetNonOptionValue(Index: integer; Opts: TStringArray): string;
     function ClampFloat(X: single): single;
     function FlattenCube(Level: integer; B: integer; G: integer; R: integer): integer;
-    procedure WriteCube(FileName: string; Data: TArr1D; CubeLevel: integer;
+    procedure WriteCube(FileName: string; Data: TRGBSingleDynArray; CubeLevel: integer;
       DestSize: integer; Fmt: string; ATitle: string; DomainMin: TArr3f;
       DomainMax: TArr3f);
   protected
@@ -72,7 +72,7 @@ type
     Result := B * Level * Level + G * Level + R;
   end;
 
-  procedure TConsoleApplication.WriteCube(FileName: string; Data: TArr1D;
+  procedure TConsoleApplication.WriteCube(FileName: string; Data: TRGBSingleDynArray;
     CubeLevel: integer; DestSize: integer; Fmt: string; ATitle: string;
     DomainMin: TArr3f; DomainMax: TArr3f);
   var
@@ -179,8 +179,8 @@ type
     N: integer;
     i: integer;
     Parts: TStringArray;
-    RGB: TRGB;
-    Data: TArr1D;
+    RGB: TRGBSingle;
+    Data: TRGBSingleDynArray;
     DomainMin: TArr3f = (0.0, 0.0, 0.0);
     DomainMax: TArr3f = (1.0, 1.0, 1.0);
   begin

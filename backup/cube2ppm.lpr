@@ -17,7 +17,7 @@ type
     B: single;
   end;
 
-  TArr1D = array of TRGB;
+  TRGBSingleDynArray = array of TRGB;
 
   { TConsoleApplication }
 
@@ -26,7 +26,7 @@ type
     function GetNonOptionValue(Index: integer; Opts: TStringArray): string;
     function ClampToByteInt(X: single): integer;
     function FlattenCube(Level: integer; B: integer; G: integer; R: integer): integer;
-    procedure WriteHaldClut(FileName: string; Data: TArr1D; CubeLevel: integer;
+    procedure WriteHaldClut(FileName: string; Data: TRGBSingleDynArray; CubeLevel: integer;
       HaldLevel: integer; TextMode: boolean);
   protected
     procedure DoRun; override;
@@ -74,7 +74,7 @@ type
   end;
 
   procedure TConsoleApplication.WriteHaldClut(FileName: string;
-    Data: TArr1D; CubeLevel: integer; HaldLevel: integer; TextMode: boolean);
+    Data: TRGBSingleDynArray; CubeLevel: integer; HaldLevel: integer; TextMode: boolean);
   var
     r, g, b: integer;
     PR, PG, PB, PN: integer;
@@ -184,7 +184,7 @@ type
     i: integer;
     Parts: TStringArray;
     RGB: TRGB;
-    Data: TArr1D;
+    Data: TRGBSingleDynArray;
     PPMTextMode: boolean;
   begin
 
@@ -268,13 +268,13 @@ type
           if Pos('LUT_3D_SIZE', Line) = 1 then
           begin
             Parts := Line.Split(' ');
-            SrcSize := StrToInt(Parts[High(Parts)]);
+            CubeSize := StrToInt(Parts[High(Parts)]);
           end;
           if (not RAWData) and (Line <> '') and
             (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
           begin
             RAWData := True;
-            N := SrcSize * SrcSize * SrcSize;
+            N := CubeSize * CubeSize * CubeSize;
             SetLength(Data, N);
           end;
 

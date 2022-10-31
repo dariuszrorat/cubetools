@@ -9,13 +9,13 @@
         <Filename Value="cube2ppm.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="244"/>
-        <CursorPos Y="244"/>
+        <TopLine Value="168"/>
+        <CursorPos X="29" Y="187"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit0>
     </Units>
-    <JumpHistory Count="17" HistoryIndex="16">
+    <JumpHistory Count="19" HistoryIndex="18">
       <Position1>
         <Filename Value="cube2ppm.lpr"/>
         <Caret Line="59" Column="63" TopLine="51"/>
@@ -84,6 +84,14 @@
         <Filename Value="cube2ppm.lpr"/>
         <Caret Line="178" TopLine="166"/>
       </Position17>
+      <Position18>
+        <Filename Value="cube2ppm.lpr"/>
+        <Caret Line="244" TopLine="244"/>
+      </Position18>
+      <Position19>
+        <Filename Value="cube2ppm.lpr"/>
+        <Caret Line="20" Column="9"/>
+      </Position19>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
