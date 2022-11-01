@@ -237,10 +237,9 @@ type
     Input, Output, Clut: TByteDynArray;
     x, y, level: integer;
     i: int64;
-    Verbose: boolean;
   begin
     // quick check parameters
-    ErrorMsg := CheckOptions('hv', 'help');
+    ErrorMsg := CheckOptions('h', 'help');
     if ErrorMsg <> '' then
     begin
       ShowException(Exception.Create(ErrorMsg));
@@ -249,17 +248,15 @@ type
     end;
 
     // parse parameters
-    if HasOption('h', 'help') then
+    if HasOption('h', 'help') or (ParamCount = 0) then
     begin
       WriteHelp;
       Terminate;
       Exit;
     end;
 
-    Verbose := HasOption('v', 'verbose');
-
     { add your program here }
-    NonOpts := GetNonOptions('hv', ['help', 'verbose']);
+    NonOpts := GetNonOptions('h', ['help']);
     InputFileName := GetNonOptionValue(0, NonOpts);
     ClutFileName := GetNonOptionValue(1, NonOpts);
     OutputFileName := GetNonOptionValue(2, NonOpts);

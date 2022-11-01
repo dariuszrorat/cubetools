@@ -1,4 +1,4 @@
-program ppmclut;
+program ppmcube;
 
 {$mode objfpc}{$H+}
 
@@ -12,6 +12,14 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
 
 type
 
+  TRGBSingle = record
+    R: single;
+    G: single;
+    B: single;
+  end;
+
+  TArr3f = array[0..2] of single;
+
   { TConsoleApplication }
 
   TConsoleApplication = class(TCustomApplication)
@@ -20,11 +28,13 @@ type
     function LinearInterpolate(X: single; X0: single; X1: single;
       Y0: single; Y1: single): single;
     function GetNonOptionValue(Index: integer; Opts: TStringArray): string;
-    procedure LoadPPM(FileName: string; var Arr: TByteDynArray;
+    procedure LoadCube(FileName: string; var Data: TByteDynArray;
+      var Level: integer);
+    procedure LoadPPM(FileName: string; var Data: TByteDynArray;
       var x: integer; var y: integer);
     procedure SavePPM(FileName: string; Data: TByteDynArray; x: integer; y: integer);
     procedure CorrectPixel(Input: TByteDynArray; Output: TByteDynArray;
-      Clut: TByteDynArray; Level: integer; Index: int64);
+      Lut: TByteDynArray; Level: integer; Index: int64);
   protected
     procedure DoRun; override;
   public
@@ -66,7 +76,106 @@ type
     end;
   end;
 
-  procedure TConsoleApplication.LoadPPM(FileName: string; var Arr: TByteDynArray;
+  procedure TConsoleApplication.LoadCube(FileName: string; var Data: TByteDynArray;
+  var Level: integer);
+  var
+    Handle: TextFile;
+    FileOpened: boolean;
+    RAWData: boolean;
+    Line: string;
+    CubeSize: integer;
+    N: integer;
+    i: integer;
+    Parts: TStringArray;
+    RGB: TRGBSingle;
+    DomainMin: TArr3f = (0.0, 0.0, 0.0);
+    DomainMax: TArr3f = (1.0, 1.0, 1.0);
+  begin
+    RAWData := False;
+    i := 0;
+    FileOpened := False;
+
+    AssignFile(Handle, FileName);
+    try
+      try
+        Reset(Handle);
+        FileOpened := True;
+        while not EOF(Handle) do
+        begin
+          Readln(Handle, Line);
+          Line := Trim(Line);
+
+          if Pos('DOMAIN_MIN', Line) = 1 then
+          begin
+            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
+            Parts := Line.Split(' ');
+            DomainMin[0] := StrToFloat(Parts[1]);
+            DomainMin[1] := StrToFloat(Parts[2]);
+            DomainMin[2] := StrToFloat(Parts[3]);
+          end;
+          if Pos('DOMAIN_MAX', Line) = 1 then
+          begin
+            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
+            Parts := Line.Split(' ');
+            DomainMax[0] := StrToFloat(Parts[1]);
+            DomainMax[1] := StrToFloat(Parts[2]);
+            DomainMax[2] := StrToFloat(Parts[3]);
+          end;
+          if Pos('LUT_1D_SIZE', Line) = 1 then
+          begin
+            Writeln('LUT 1D format is not supported');
+            Terminate;
+            Exit;
+          end;
+          if Pos('LUT_3D_SIZE', Line) = 1 then
+          begin
+            Parts := Line.Split(' ');
+            CubeSize := StrToInt(Parts[High(Parts)]);
+            Level := CubeSize;
+          end;
+          if (not RAWData) and (Line <> '') and
+            (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          begin
+            RAWData := True;
+            N := CubeSize * CubeSize * CubeSize;
+            SetLength(Data, N * 3);
+          end;
+
+          if RAWData and (Line <> '') and
+            (Line[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']) then
+          begin
+            Line := StringReplace(Line, '.', ',', [rfReplaceAll]);
+            Parts := Line.Split(#9#32);
+            RGB.R := StrToFloat(Parts[Low(Parts) + 0]);
+            RGB.G := StrToFloat(Parts[Low(Parts) + 1]);
+            RGB.B := StrToFloat(Parts[Low(Parts) + 2]);
+            Data[i + 0] := Clamp(Round(255 * RGB.R), 0, 255);
+            Data[i + 1] := Clamp(Round(255 * RGB.G), 0, 255);
+            Data[i + 2] := Clamp(Round(255 * RGB.B), 0, 255);
+            i := i + 3;
+          end;
+        end;
+
+        if not RAWData then
+        begin
+          Writeln('Unsupported CUBE format');
+          Terminate;
+          Exit;
+        end;
+
+      except
+        on E: Exception do
+        begin
+          Writeln(E.Message);
+        end;
+      end;
+    finally
+      if FileOpened then
+        CloseFile(Handle);
+    end;
+  end;
+
+  procedure TConsoleApplication.LoadPPM(FileName: string; var Data: TByteDynArray;
   var x: integer; var y: integer);
   var
     Handle: TextFile;
@@ -82,7 +191,7 @@ type
     Val: byte;
     r: int64;
   begin
-    SetLength(Arr, 0);
+    SetLength(Data, 0);
     AssignFile(Handle, FileName);
     try
       try
@@ -130,13 +239,13 @@ type
           Exit;
         end;
 
-        SetLength(Arr, XSize * YSize * 3);
+        SetLength(Data, XSize * YSize * 3);
         r := 0;
         while r < Int64(XSize) * Int64(YSize) * 3 do
         begin
           Read(Handle, C);
           Val := byte(c);
-          Arr[r] := Val;
+          Data[r] := Val;
           Inc(r);
         end;
       except
@@ -179,50 +288,47 @@ type
   end;
 
   procedure TConsoleApplication.CorrectPixel(Input: TByteDynArray;
-    Output: TByteDynArray; Clut: TByteDynArray; Level: integer; Index: int64);
+    Output: TByteDynArray; Lut: TByteDynArray; Level: integer; Index: int64);
   var
     Red, Green, Blue, i, j: integer;
     X, Y, X0, X1, Y0, Y1: single;
     Color, NextColor: integer;
     r, g, b: single;
-    LevelSquare: integer;
   begin
-    LevelSquare := Level * Level;
+    r := Input[Index + 0] * (Level - 1) / 255;
+    g := Input[Index + 1] * (Level - 1) / 255;
+    b := Input[Index + 2] * (Level - 1) / 255;
 
-    r := Input[Index + 0] * (LevelSquare - 1) / 255;
-    g := Input[Index + 1] * (LevelSquare - 1) / 255;
-    b := Input[Index + 2] * (LevelSquare - 1) / 255;
+    Red := Clamp(Floor(r), 0, Level - 2);
+    Green := Clamp(Floor(g), 0, Level - 2);
+    Blue := Clamp(Floor(b), 0, Level - 2);
 
-    Red := Clamp(Floor(r), 0, LevelSquare - 2);
-    Green := Clamp(Floor(g), 0, LevelSquare - 2);
-    Blue := Clamp(Floor(b), 0, LevelSquare - 2);
-
-    Color := Red + Green * LevelSquare + Blue * LevelSquare * LevelSquare;
-    NextColor := (Red + 1) + (Green + 1) * LevelSquare + (Blue + 1) * LevelSquare * LevelSquare;
+    Color := Red + Green * Level + Blue * Level * Level;
+    NextColor := (Red + 1) + (Green + 1) * Level + (Blue + 1) * Level * Level;
     i := Color * 3;
     j := NextColor * 3;
 
     X := Input[Index + 0] / 255;
-    X0 := Red / (LevelSquare - 1);
-    X1 := (Red + 1) / (LevelSquare - 1);
-    Y0 := Clut[i + 0] / 255;
-    Y1 := Clut[j + 0] / 255;
+    X0 := Red / (Level - 1);
+    X1 := (Red + 1) / (Level - 1);
+    Y0 := Lut[i + 0] / 255;
+    Y1 := Lut[j + 0] / 255;
     Y := LinearInterpolate(X, X0, X1, Y0, Y1);
     Output[Index + 0] := Clamp(Round(255 * Y), 0, 255);
 
     X := Input[Index + 1] / 255;
-    X0 := Green / (LevelSquare - 1);
-    X1 := (Green + 1) / (LevelSquare - 1);
-    Y0 := Clut[i + 1] / 255;
-    Y1 := Clut[j + 1] / 255;
+    X0 := Green / (Level - 1);
+    X1 := (Green + 1) / (Level - 1);
+    Y0 := Lut[i + 1] / 255;
+    Y1 := Lut[j + 1] / 255;
     Y := LinearInterpolate(X, X0, X1, Y0, Y1);
     Output[Index + 1] := Clamp(Round(255 * Y), 0, 255);
 
     X := Input[Index + 2] / 255;
-    X0 := Blue / (LevelSquare - 1);
-    X1 := (Blue + 1) / (LevelSquare - 1);
-    Y0 := Clut[i + 2] / 255;
-    Y1 := Clut[j + 2] / 255;
+    X0 := Blue / (Level - 1);
+    X1 := (Blue + 1) / (Level - 1);
+    Y0 := Lut[i + 2] / 255;
+    Y1 := Lut[j + 2] / 255;
     Y := LinearInterpolate(X, X0, X1, Y0, Y1);
     Output[Index + 2] := Clamp(Round(255 * Y), 0, 255);
   end;
@@ -232,9 +338,9 @@ type
     ErrorMsg: string;
     NonOpts: TStringArray;
     InputFileName: string;
-    ClutFileName: string;
+    CubeFileName: string;
     OutputFileName: string;
-    Input, Output, Clut: TByteDynArray;
+    Input, Output, Lut: TByteDynArray;
     x, y, level: integer;
     i: int64;
   begin
@@ -258,19 +364,15 @@ type
     { add your program here }
     NonOpts := GetNonOptions('h', ['help']);
     InputFileName := GetNonOptionValue(0, NonOpts);
-    ClutFileName := GetNonOptionValue(1, NonOpts);
+    CubeFileName := GetNonOptionValue(1, NonOpts);
     OutputFileName := GetNonOptionValue(2, NonOpts);
 
     level := 0;
     x := 0;
     y := 0;
-    SetLength(Clut, 0);
+    SetLength(Lut, 0);
     SetLength(Input, 0);
-    LoadPPM(ClutFileName, Clut, x, y);
-    while level * level * level < x do
-    begin
-      level := level + 1;
-    end;
+    LoadCube(CubeFileName, Lut, level);
 
     LoadPPM(InputFileName, Input, x, y);
     SetLength(Output, x * y * 3);
@@ -278,7 +380,7 @@ type
     i := 0;
     while i < (Int64(x) * Int64(y) * 3) do
     begin
-      CorrectPixel(Input, Output, Clut, level, i);
+      CorrectPixel(Input, Output, Lut, level, i);
       i := i + 3;
     end;
 
@@ -302,7 +404,7 @@ type
   procedure TConsoleApplication.WriteHelp;
   begin
     { add your help code here }
-    writeln('Usage: ppmclut <infile> <clutfile> <outfile>');
+    writeln('Usage: ppmcube <infile> <cubefile> <outfile>');
   end;
 
 var
@@ -313,3 +415,4 @@ begin
   Application.Run;
   Application.Free;
 end.
+
