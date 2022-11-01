@@ -12,21 +12,16 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
 
 type
 
-  TRGBSingle = record
-    R: single;
-    G: single;
-    B: single;
-  end;
-
-  TRGBSingleDynArray = array of TRGBSingle;
-
   { TConsoleApplication }
 
   TConsoleApplication = class(TCustomApplication)
   private
     function Clamp(X: integer; Min: integer; Max: integer): integer;
+    function LinearInterpolate(X: single; X0: single; X1: single;
+      Y0: single; Y1: single): single;
     function GetNonOptionValue(Index: integer; Opts: TStringArray): string;
-    procedure LoadPPM(FileName: string; var Arr: TByteDynArray; var x: integer; var y: integer);
+    procedure LoadPPM(FileName: string; var Arr: TByteDynArray;
+      var x: integer; var y: integer);
     procedure SavePPM(FileName: string; Data: TByteDynArray; x: integer; y: integer);
     procedure CorrectPixel(Input: TByteDynArray; Output: TByteDynArray;
       Clut: TByteDynArray; Level: integer; Index: int64);
@@ -49,6 +44,11 @@ type
       Result := X;
   end;
 
+  function TConsoleApplication.LinearInterpolate(X: single; X0: single;
+    X1: single; Y0: single; Y1: single): single;
+  begin
+    Result := Y0 + (X - X0) * (Y1 - Y0) / (X1 - X0);
+  end;
 
   function TConsoleApplication.GetNonOptionValue(Index: integer;
     Opts: TStringArray): string;
@@ -66,7 +66,8 @@ type
     end;
   end;
 
-  procedure TConsoleApplication.LoadPPM(FileName: string; var Arr: TByteDynArray; var x: integer; var y: integer);
+  procedure TConsoleApplication.LoadPPM(FileName: string; var Arr: TByteDynArray;
+  var x: integer; var y: integer);
   var
     Handle: TextFile;
     FileOpened: boolean;
@@ -110,7 +111,7 @@ type
           end;
 
           Parts := Header.Split(' ');
-          Part := Parts[High(Parts)-1];
+          Part := Parts[High(Parts) - 1];
 
           EndHeader := (Part[1] in ['0', '1', '2', '3', '4', '5', '6',
             '7', '8', '9']) and (Length(Parts) >= 5);
@@ -131,7 +132,7 @@ type
 
         SetLength(Arr, XSize * YSize * 3);
         r := 0;
-        while r < XSize * YSize * 3 do
+        while r < Int64(XSize) * Int64(YSize) * 3 do
         begin
           Read(Handle, C);
           Val := byte(c);
@@ -165,7 +166,7 @@ type
       r := 0;
 
       r := 0;
-      while r < x * y * 3 do
+      while r < Int64(x) * Int64(y) * 3 do
       begin
         C := char(Data[r]);
         Write(Handle, C);
@@ -181,10 +182,9 @@ type
     Output: TByteDynArray; Clut: TByteDynArray; Level: integer; Index: int64);
   var
     Red, Green, Blue, i, j: integer;
-    dR, dG, dB: single;
-    Color: integer;
+    X, Y, X0, X1, Y0, Y1: single;
+    Color, NextColor: integer;
     r, g, b: single;
-    tmp: array[0..5] of single;
     LevelSquare: integer;
   begin
     LevelSquare := Level * Level;
@@ -193,25 +193,38 @@ type
     g := Input[Index + 1] * (LevelSquare - 1) / 255;
     b := Input[Index + 2] * (LevelSquare - 1) / 255;
 
-    Red   := Clamp(Round(r), 0, LevelSquare - 2);
-    Green := Clamp(Round(g), 0, LevelSquare - 2);
-    Blue  := Clamp(Round(b), 0, LevelSquare - 2);
-
-    // Temporary not needed
-    //dR := (Input[Index + 0] / 255.0) * single((LevelSquare - 1)) - single(Red);
-    //dG := (Input[Index + 1] / 255.0) * single((LevelSquare - 1)) - single(Green);
-    //dB := (Input[Index + 2] / 255.0) * single((LevelSquare - 1)) - single(Blue);
+    Red := Clamp(Floor(r), 0, LevelSquare - 2);
+    Green := Clamp(Floor(g), 0, LevelSquare - 2);
+    Blue := Clamp(Floor(b), 0, LevelSquare - 2);
 
     Color := Red + Green * LevelSquare + Blue * LevelSquare * LevelSquare;
+    NextColor := (Red + 1) + (Green + 1) * LevelSquare + (Blue + 1) * LevelSquare * LevelSquare;
     i := Color * 3;
+    j := NextColor * 3;
 
-    // Temporary not needed
-    //j := (Color + 1) * 3;
+    X := Input[Index + 0] / 255;
+    X0 := Red / (LevelSquare - 1);
+    X1 := (Red + 1) / (LevelSquare - 1);
+    Y0 := Clut[i + 0] / 255;
+    Y1 := Clut[j + 0] / 255;
+    Y := LinearInterpolate(X, X0, X1, Y0, Y1);
+    Output[Index + 0] := Clamp(Round(255 * Y), 0, 255);
 
-    Output[Index + 0] := Clut[i + 0];
-    Output[Index + 1] := Clut[i + 1];
-    Output[Index + 2] := Clut[i + 2];
+    X := Input[Index + 1] / 255;
+    X0 := Green / (LevelSquare - 1);
+    X1 := (Green + 1) / (LevelSquare - 1);
+    Y0 := Clut[i + 1] / 255;
+    Y1 := Clut[j + 1] / 255;
+    Y := LinearInterpolate(X, X0, X1, Y0, Y1);
+    Output[Index + 1] := Clamp(Round(255 * Y), 0, 255);
 
+    X := Input[Index + 2] / 255;
+    X0 := Blue / (LevelSquare - 1);
+    X1 := (Blue + 1) / (LevelSquare - 1);
+    Y0 := Clut[i + 2] / 255;
+    Y1 := Clut[j + 2] / 255;
+    Y := LinearInterpolate(X, X0, X1, Y0, Y1);
+    Output[Index + 2] := Clamp(Round(255 * Y), 0, 255);
   end;
 
   procedure TConsoleApplication.DoRun;
@@ -243,13 +256,14 @@ type
     end;
 
     { add your program here }
-    NonOpts := GetNonOptions('h', ['help']);
+    NonOpts := GetNonOptions('h', ['help', 'verbose']);
     InputFileName := GetNonOptionValue(0, NonOpts);
     ClutFileName := GetNonOptionValue(1, NonOpts);
     OutputFileName := GetNonOptionValue(2, NonOpts);
 
     level := 0;
-    x :=0; y := 0;
+    x := 0;
+    y := 0;
     SetLength(Clut, 0);
     SetLength(Input, 0);
     LoadPPM(ClutFileName, Clut, x, y);
@@ -262,12 +276,11 @@ type
     SetLength(Output, x * y * 3);
 
     i := 0;
-    while i < (x * y * 3) do
+    while i < (Int64(x) * Int64(y) * 3) do
     begin
       CorrectPixel(Input, Output, Clut, level, i);
       i := i + 3;
     end;
-
 
     SavePPM(OutputFileName, Output, x, y);
 
