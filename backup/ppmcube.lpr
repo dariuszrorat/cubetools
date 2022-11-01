@@ -29,12 +29,12 @@ type
       Y0: single; Y1: single): single;
     function GetNonOptionValue(Index: integer; Opts: TStringArray): string;
     procedure LoadCube(FileName: string; var Data: TByteDynArray;
-      var Level: integer);
+      var Level: integer; var DomainMin: TArr3f; var DomainMax: TArr3f);
     procedure LoadPPM(FileName: string; var Data: TByteDynArray;
       var x: integer; var y: integer);
     procedure SavePPM(FileName: string; Data: TByteDynArray; x: integer; y: integer);
     procedure CorrectPixel(Input: TByteDynArray; Output: TByteDynArray;
-      Lut: TByteDynArray; Level: integer; Index: int64);
+      Lut: TByteDynArray; Level: integer; Index: int64; DomainMin: TArr3f; DomainMax: TArr3f);
   protected
     procedure DoRun; override;
   public
@@ -77,7 +77,7 @@ type
   end;
 
   procedure TConsoleApplication.LoadCube(FileName: string; var Data: TByteDynArray;
-  var Level: integer);
+  var Level: integer; var DomainMin: TArr3f; var DomainMax: TArr3f);
   var
     Handle: TextFile;
     FileOpened: boolean;
@@ -88,8 +88,6 @@ type
     i: integer;
     Parts: TStringArray;
     RGB: TRGBSingle;
-    DomainMin: TArr3f = (0.0, 0.0, 0.0);
-    DomainMax: TArr3f = (1.0, 1.0, 1.0);
   begin
     RAWData := False;
     i := 0;
@@ -288,7 +286,7 @@ type
   end;
 
   procedure TConsoleApplication.CorrectPixel(Input: TByteDynArray;
-    Output: TByteDynArray; Lut: TByteDynArray; Level: integer; Index: int64);
+    Output: TByteDynArray; Lut: TByteDynArray; Level: integer; Index: int64; DomainMin: TArr3f; DomainMax: TArr3f);
   var
     Red, Green, Blue, i, j: integer;
     X, Y, X0, X1, Y0, Y1: single;
@@ -309,6 +307,7 @@ type
     j := NextColor * 3;
 
     X := Input[Index + 0] / 255;
+    X := (X - DomainMin[0]) / (DomainMax[0] - DomainMin[0]);
     X0 := Red / (Level - 1);
     X1 := (Red + 1) / (Level - 1);
     Y0 := Lut[i + 0] / 255;
@@ -317,6 +316,7 @@ type
     Output[Index + 0] := Clamp(Round(255 * Y), 0, 255);
 
     X := Input[Index + 1] / 255;
+    X := (X - DomainMin[1]) / (DomainMax[1] - DomainMin[1]);
     X0 := Green / (Level - 1);
     X1 := (Green + 1) / (Level - 1);
     Y0 := Lut[i + 1] / 255;
@@ -325,6 +325,7 @@ type
     Output[Index + 1] := Clamp(Round(255 * Y), 0, 255);
 
     X := Input[Index + 2] / 255;
+    X := (X - DomainMin[2]) / (DomainMax[2] - DomainMin[2]);
     X0 := Blue / (Level - 1);
     X1 := (Blue + 1) / (Level - 1);
     Y0 := Lut[i + 2] / 255;
@@ -343,6 +344,8 @@ type
     Input, Output, Lut: TByteDynArray;
     x, y, level: integer;
     i: int64;
+    DomainMin: TArr3f = (0.0, 0.0, 0.0);
+    DomainMax: TArr3f = (1.0, 1.0, 1.0);
   begin
     // quick check parameters
     ErrorMsg := CheckOptions('h', 'help');
@@ -404,7 +407,7 @@ type
   procedure TConsoleApplication.WriteHelp;
   begin
     { add your help code here }
-    writeln('Usage: ppmcube [options] <infile> <cubefile> <outfile>');
+    writeln('Usage: ppmcube <infile> <cubefile> <outfile>');
   end;
 
 var
