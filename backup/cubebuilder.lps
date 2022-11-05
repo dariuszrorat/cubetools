@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="11"/>
+    <BuildModes Active="Release"/>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="cubebuilder.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="38" Y="19"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="cubebuildfrm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormBuilder"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="170"/>
+        <CursorPos X="55" Y="190"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="460" Column="36" TopLine="446"/>
+      </Position1>
+      <Position2>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="459" Column="29" TopLine="445"/>
+      </Position2>
+      <Position3>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="470" Column="51" TopLine="457"/>
+      </Position3>
+      <Position4>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="188" Column="63" TopLine="179"/>
+      </Position4>
+      <Position5>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="189" Column="18" TopLine="179"/>
+      </Position5>
+      <Position6>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="121" TopLine="108"/>
+      </Position6>
+      <Position7>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="154" TopLine="133"/>
+      </Position7>
+      <Position8>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="189" Column="18" TopLine="169"/>
+      </Position8>
+      <Position9>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="120" Column="44" TopLine="108"/>
+      </Position9>
+      <Position10>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="153" Column="42" TopLine="133"/>
+      </Position10>
+      <Position11>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="77" Column="19" TopLine="70"/>
+      </Position11>
+      <Position12>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="132" Column="48" TopLine="124"/>
+      </Position12>
+      <Position13>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="52" Column="23" TopLine="41"/>
+      </Position13>
+      <Position14>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="131" Column="32" TopLine="112"/>
+      </Position14>
+      <Position15>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="142" Column="61" TopLine="122"/>
+      </Position15>
+      <Position16>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="154" Column="61" TopLine="134"/>
+      </Position16>
+      <Position17>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="190" Column="61" TopLine="170"/>
+      </Position17>
+      <Position18>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="120" Column="20" TopLine="108"/>
+      </Position18>
+      <Position19>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="142" Column="18" TopLine="122"/>
+      </Position19>
+      <Position20>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="154" Column="18" TopLine="134"/>
+      </Position20>
+      <Position21>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="190" Column="18" TopLine="170"/>
+      </Position21>
+      <Position22>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="120" Column="63" TopLine="108"/>
+      </Position22>
+      <Position23>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="142" Column="18" TopLine="122"/>
+      </Position23>
+      <Position24>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="154" Column="18" TopLine="134"/>
+      </Position24>
+      <Position25>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="190" Column="18" TopLine="170"/>
+      </Position25>
+      <Position26>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="119" Column="56" TopLine="108"/>
+      </Position26>
+      <Position27>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="120" Column="57" TopLine="108"/>
+      </Position27>
+      <Position28>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="142" Column="55" TopLine="122"/>
+      </Position28>
+      <Position29>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="154" Column="55" TopLine="134"/>
+      </Position29>
+      <Position30>
+        <Filename Value="cubebuildfrm.pas"/>
+        <Caret Line="190" Column="55" TopLine="170"/>
+      </Position30>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>
