@@ -143,3 +143,7 @@ Usage: ppmcube <infile> <cubefile> <outfile>
 Useful tool to build Cube and Hald CLUT
 
 ![Cube builder.](/images/cubebuilder.png "Cube builder.")
+
+![Cube builder.](/images/negative.png "Cube builder negative.")
+
+![Cube builder.](/images/grayscale.png "Cube builder grayscale.")
