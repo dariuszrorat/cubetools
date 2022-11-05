@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Menus,
-  ExtCtrls, Buttons, Spin, ExtDlgs, SynEdit, SynHighlighterAny,
-  SynHighlighterPython, Math;
+  ExtCtrls, Buttons, Spin, ExtDlgs, SynEdit, SynHighlighterAny, Math;
 
 type
   TRGBSingle = record
@@ -133,7 +132,7 @@ end;
 
 procedure TFormBuilder.FormShow(Sender: TObject);
 begin
-  FLevel := 2;
+  FLevel := 4;
   FPage := 0;
   SetLength(FInData, FLevel * FLevel * FLevel);
   SetLength(FOutData, FLevel * FLevel * FLevel);
@@ -282,7 +281,7 @@ var
   List: TStringList;
 begin
   List := TStringList.Create;
-  List.Add('TITLE "MY_LUT"');
+  List.Add('TITLE "MYLUT"');
   List.Add('DOMAIN_MIN 0 0 0');
   List.Add('DOMAIN_MAX 1 1 1');
   List.Add('LUT_3D_SIZE ' + IntToStr(FLevel));

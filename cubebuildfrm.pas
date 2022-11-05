@@ -6,8 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Menus,
-  ExtCtrls, Buttons, Spin, ExtDlgs, SynEdit, SynHighlighterAny,
-  SynHighlighterPython, Math;
+  ExtCtrls, Buttons, Spin, ExtDlgs, SynEdit, SynHighlighterAny, Math;
 
 type
   TRGBSingle = record
