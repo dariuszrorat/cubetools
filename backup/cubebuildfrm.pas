@@ -44,6 +44,7 @@ type
     SavePictureDialog: TSavePictureDialog;
     SpLevel: TSpinEdit;
     MemoCUBE: TSynEdit;
+    StaticText1: TStaticText;
     SynAnySyn: TSynAnySyn;
     procedure BtnNextClick(Sender: TObject);
     procedure BtnPriorClick(Sender: TObject);
@@ -117,8 +118,8 @@ begin
   if FPage > (FLevel - 1) then
   begin
     FPage := FLevel - 1;
-    LblPage.Caption := Format('Page: %d of %d', [FPage+1, FLevel]);
   end;
+  LblPage.Caption := Format('Page: %d of %d', [FPage+1, FLevel]);
 
   SetLength(FInData, FLevel * FLevel * FLevel);
   SetLength(FOutData, FLevel * FLevel * FLevel);
@@ -249,7 +250,7 @@ begin
       FInputShapes[i].Parent := GroupInputShapes;
       FInputShapes[i].Tag := i;
       FInputShapes[i].ShowHint := True;
-      FInputShapes[i].Hint := 'Click to define output color';
+      FInputShapes[i].Hint := Format('R=%d, G=%d, B=%d', [Red(C), Green(C), Blue(C)]);
       FInputShapes[i].OnMouseDown := @ShapeMouseDown;
       FInputShapes[i].Show;
 
@@ -263,6 +264,8 @@ begin
       FOutputShapes[i].Brush.Color := C;
       FOutputShapes[i].Parent := GroupOutputShapes;
       FOutputShapes[i].Tag := i;
+      FOutputShapes[i].ShowHint := True;
+      FOutputShapes[i].Hint := Format('R=%d, G=%d, B=%d', [Red(C), Green(C), Blue(C)]);
       FOutputShapes[i].Show;
 
       Inc(i);

@@ -139,6 +139,17 @@ object FormBuilder: TFormBuilder
       Caption = 'Page: 0 of 0'
       ParentColor = False
     end
+    object StaticText1: TStaticText
+      Cursor = crDrag
+      Left = 8
+      Height = 97
+      Top = 56
+      Width = 70
+      Caption = 'Click on shape color'#13#10'to define custom'#13#10'color'#13#10'----->'
+      Color = clDefault
+      ParentColor = False
+      TabOrder = 1
+    end
   end
   object GroupOutputShapes: TGroupBox
     Left = 408
