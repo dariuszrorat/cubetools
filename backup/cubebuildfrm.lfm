@@ -782,6 +782,7 @@ object FormBuilder: TFormBuilder
   end
   object SynAnySyn: TSynAnySyn
     Enabled = False
+    CommentAttri.Foreground = clMedGray
     Comments = []
     DetectPreprocessor = False
     IdentifierChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'
@@ -792,7 +793,12 @@ object FormBuilder: TFormBuilder
       'LUT_3D_SIZE'
       'TITLE'
     )
-    NumberAttri.Foreground = clBlue
+    Constants.Strings = (
+      ''
+    )
+    NumberAttri.Foreground = clMaroon
+    StringAttri.Foreground = clBlue
+    StringDelim = sdDoubleQuote
     Markup = False
     Entity = False
     DollarVariables = False
