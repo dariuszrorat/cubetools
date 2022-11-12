@@ -191,6 +191,7 @@ object FormBuilder: TFormBuilder
         'Custom'
         'Negative'
         'Grayscale'
+        'Random'
       )
       OnSelect = CboEffectSelect
       Style = csOwnerDrawFixed

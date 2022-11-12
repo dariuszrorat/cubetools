@@ -480,6 +480,18 @@ begin
         FUpdate := true;
       end;
     end;
+    3: // random
+    begin
+      Randomize;
+      for i := 0 to Length(FInData) - 1 do
+      begin
+        RGB.R := Random(1000000000) / 1000000000;
+        RGB.G := Random(1000000000) / 1000000000;
+        RGB.B := Random(1000000000) / 1000000000;
+        FOutData[i] := RGB;
+        FUpdate := true;
+      end;
+    end;
   end;
 
   if FUpdate then

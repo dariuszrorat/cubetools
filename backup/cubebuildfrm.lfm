@@ -129,7 +129,7 @@ object FormBuilder: TFormBuilder
       MinValue = 2
       OnChange = SpLevelChange
       TabOrder = 0
-      Value = 4
+      Value = 2
     end
     object LblPage: TLabel
       Left = 16

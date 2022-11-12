@@ -132,7 +132,7 @@ end;
 
 procedure TFormBuilder.FormShow(Sender: TObject);
 begin
-  FLevel := 4;
+  FLevel := 2;
   FPage := 0;
   SetLength(FInData, FLevel * FLevel * FLevel);
   SetLength(FOutData, FLevel * FLevel * FLevel);
